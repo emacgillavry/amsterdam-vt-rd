@@ -29,10 +29,10 @@
   "dependencies": {
     "core-js": "^3.8.0",
     "es6-promise": "^4.2.8",
-    "isomorphic-fetch": "^2.2.1",
     "ol": "^6.4.3",
     "ol-mapbox-style": "^5.0.2",
     "proj4": "^2.6.3",
-    "regenerator-runtime": "^0.13.7"
+    "regenerator-runtime": "^0.13.7",
+    "whatwg-fetch": "^3.5.0"
   }
 }

@@ -1,6 +1,6 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
-import fetch from "isomorphic-fetch";
+import "whatwg-fetch";
 import "./style.css";
 import "ol/ol.css";
 import Map from "ol/Map";
