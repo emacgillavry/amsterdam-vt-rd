@@ -24,7 +24,12 @@ const map = initializeMap(projection, tileGrid);
 
 const backgroundMap = pdokGrayMap(projection, tileGrid);
 const overlay = owObjectLayer(projection, tileGrid);
-map.addLayer(backgroundMap);
+
+// ------------------------------------------------------
+// Uncomment the following line to see PDOK reference map
+// ------------------------------------------------------
+// map.addLayer(backgroundMap);
+//-------------------------------------------------------
 
 fetch("/data/topo_rd_direct.json").then(function(response) {
   response.json().then(function(glStyle) {
