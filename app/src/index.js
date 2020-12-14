@@ -123,7 +123,7 @@ function owObjectLayer(projection, tileGrid) {
       origin: getTopLeft(tileGrid.getExtent()),
       resolutions: tileGrid.getResolutions().slice(0, maxZoom + 1),
     }),
-    url: "http://localhost:6767/basiskaart_rd/{z}/{x}/{y}.pbf",
+    url: "http://localhost:6768/basiskaart_rd/{z}/{x}/{y}.pbf",
     tilePixelRatio: 1,
     renderBuffer: 10
   });
