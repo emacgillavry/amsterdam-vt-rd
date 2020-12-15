@@ -6,16 +6,16 @@ import "ol/ol.css";
 import Map from "ol/Map";
 import View from "ol/View";
 import Projection from "ol/proj/Projection";
-import {register} from "ol/proj/proj4";
-import {getTopLeft} from "ol/extent";
+import { register } from "ol/proj/proj4";
+import { getTopLeft } from "ol/extent";
 import proj4 from "proj4";
 import TileLayer from "ol/layer/Tile";
 import TileGrid from "ol/tilegrid/TileGrid";
-import XYZ from "ol/source/XYZ";
+import { XYZ, TileDebug } from "ol/source";
 import MVT from "ol/format/MVT";
 import VectorTileLayer from "ol/layer/VectorTile";
 import VectorTileSource from "ol/source/VectorTile";
-import {applyStyle} from "ol-mapbox-style";
+import { applyStyle } from "ol-mapbox-style";
 
 const projection = rd();
 const tileGrid = dutchTileGrid();
@@ -24,6 +24,7 @@ const map = initializeMap(projection, tileGrid);
 
 const backgroundMap = pdokGrayMap(projection, tileGrid);
 const overlay = owObjectLayer(projection, tileGrid);
+const grid = tileRaster(projection, tileGrid);
 
 // ------------------------------------------------------
 // Uncomment the following line to see PDOK reference map
@@ -31,8 +32,8 @@ const overlay = owObjectLayer(projection, tileGrid);
 // map.addLayer(backgroundMap);
 //-------------------------------------------------------
 
-fetch("/data/topo_rd_direct.json").then(function(response) {
-  response.json().then(function(glStyle) {
+fetch("/data/topo_rd_direct.json").then(function (response) {
+  response.json().then(function (glStyle) {
     applyStyle(overlay, glStyle, [
       "water",
       "built_up_areas",
@@ -57,8 +58,9 @@ fetch("/data/topo_rd_direct.json").then(function(response) {
       "motorway-fill",
       "names",
       "house_numbers"
-    ]).then(function() {
-       map.addLayer(overlay);
+    ]).then(function () {
+      map.addLayer(overlay);
+      map.addLayer(grid);
     });
   });
 });
@@ -72,7 +74,7 @@ function rd() {
   const projection = new Projection({
     code: "EPSG:28992",
     units: "m",
-    extent: [-285401.920, 22598.080,  595401.9199999999, 903401.9199999999]
+    extent: [-285401.920, 22598.080, 595401.9199999999, 903401.9199999999]
   });
 
   return projection;
@@ -80,8 +82,8 @@ function rd() {
 
 function dutchTileGrid() {
   return new TileGrid({
-    extent: [-285401.920, 22598.080,  595401.9199999999, 903401.9199999999],
-    resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210, 0.105,0.0525],
+    extent: [-285401.920, 22598.080, 595401.9199999999, 903401.9199999999],
+    resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210, 0.105, 0.0525],
   });
 }
 
@@ -89,7 +91,7 @@ function initializeMap(projection, tileGrid) {
   return new Map({
     target: document.body,
     view: new View({
-      center: [122805,487728], // Amsterdam
+      center: [122805, 487728], // Amsterdam
       extent: tileGrid.getExtent(),
       constrainResolution: true,
       projection: projection,
@@ -130,5 +132,15 @@ function owObjectLayer(projection, tileGrid) {
   return new VectorTileLayer({
     source: source,
     declutter: true
-   });
+  });
+}
+
+function tileRaster(projection, tileGrid) {
+  return new TileLayer({
+    source: new TileDebug({
+      projection: projection,
+      tileGrid: tileGrid,
+      origin: getTopLeft(tileGrid.getExtent()),
+    })
+  });
 }
